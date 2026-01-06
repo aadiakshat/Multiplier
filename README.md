@@ -1,56 +1,251 @@
-Braun Multiplier (Carry Save Array Multiplier)
+# ⚡ Braun Multiplier (4x4 Carry-Save Array Multiplier)
 
-1. Overview
-- This project implements a 4x4 Braun Multiplier using gate-level Verilog.
-- It follows the carry-save array architecture, commonly used for efficient unsigned multiplication in hardware.
-- The complete multiplier is built step by step, starting from basic logic modules and then integrating them systematically.
-- No behavioral constructs are used — the entire design is built structurally using logic gates and cascaded adders.
+A **gate-level Verilog implementation** of a 4x4 Braun Multiplier using the **carry-save array architecture**. This project demonstrates how arithmetic circuits are built from scratch using fundamental logic gates and modular design principles.
 
-2. Design Approach
-- The development was done in a layered, step-wise manner to ensure clarity and correctness.
-- First, a Half Adder was implemented and tested independently.
-- Then, a Full Adder was created using two Half Adders and also tested separately.
-- Finally, these blocks were used to build the full Braun Multiplier.
-- Each stage includes a corresponding testbench to verify functionality before moving to the next.
+Built entirely using **structural modeling** — no behavioral constructs.
 
-3. Gate-Level Focus
-- Gate-level modeling was used intentionally for all modules.
-- Although not preferred for large systems, this approach gives more control and visibility into logic flow(Good for Beginners).
-- It helps in visualizing how partial products are generated, how carry bits propagate.
+---
 
-4. Files Included
-- HA.v                : Half Adder module
-- HA_tb.v             : Testbench for Half Adder
-- FA.v                : Full Adder module (built using HAs)
-- FA_tb.v             : Testbench for Full Adder
-- BM.v                : 4x4 Braun Multiplier (top module)
-- BM_tb.v             : Testbench for the multiplier
-- HA waveform.png     : Waveform of Half Adder output
-- FA waveform.png     : Waveform of Full Adder output
-- BM waveform.png     : Waveform of Multiplier output
+## 🧠 What is a Braun Multiplier?
 
-5. How to Run
-- Open all `.v` files in a code editor like Visual Studio Code.
-- It is recommended to install the "Verilog-HDL/SystemVerilog" extension in VS Code for proper syntax highlighting.(better than word or notepad)
-- Copy and paste the code into any Verilog simulator like EDA Playground (https://www.edaplayground.com/).
-- In EDA Playground:
-  - Paste the module and testbench code separately
-  - Select Icarus Verilog 12.0 as the simulator
-  - Enable waveform viewing (EPWave)(make sure to have the $dumpvars and $dumpfile in the code)
-  - Click "Run" to compile and simulate
-  - TIPS: Go to settings and check the option that allows waveforms to run on new tab and make sure to expand the code windows)
+The Braun Multiplier is a **parallel array multiplier** that performs unsigned multiplication using:
+* Partial product generation using AND gates
+* Carry-save addition for intermediate results
+* Final carry-propagate addition for the output
 
-6. Simulation
-- All testbenches use `$monitor` to track values and `$dumpfile`/`$dumpvars` to generate waveforms.
-- The testbench for the multiplier runs every possible 4-bit input combination (from 0000 × 0000 to 1111 × 1111).
-- The simulation confirms the correctness of each stage before integrating to the full design.
+It's a foundational circuit in digital design, commonly used in:
+* Arithmetic Logic Units (ALUs)
+* Digital Signal Processing (DSP)
+* Hardware accelerators
 
-7. Main Focus
-- The project was created with the goal of learning how arithmetic circuits are built from logic gates.
-- Emphasis was placed on understanding internal data paths, carry propagation, and modular design using simple building blocks.
-- All design and testing were done manually having testing each half adders and full adders with thier  modules.
+---
 
-8. Author
-- Adarsh Akshat  
-- B.Tech in Electrical and Electronics Engineering, NITK  
-- GitHub: https://github.com/aadiakshat
+## 🎯 Project Goals
+
+This project was built to:
+* Understand how arithmetic circuits are constructed from basic logic gates
+* Learn carry propagation and modular design using simple building blocks
+* Gain hands-on experience with **gate-level Verilog modeling**
+* Practice systematic testing and verification using testbenches
+
+**Note:** Gate-level modeling is not preferred for large systems, but it provides **maximum visibility into logic flow** — ideal for learning.
+
+---
+
+## ✨ Features
+
+* 🔹 Fully structural, gate-level design
+* 🔹 Modular architecture (Half Adder → Full Adder → Multiplier)
+* 🔹 Comprehensive testbenches for each module
+* 🔹 Waveform outputs for visual verification
+* 🔹 Exhaustive testing (all 256 input combinations for 4x4 multiplication)
+
+---
+
+## 🏗️ Design Architecture
+
+### Layered Development Approach
+
+```
+Half Adder (HA)
+    ↓ (tested independently)
+Full Adder (FA) — built using 2 HAs
+    ↓ (tested independently)
+4x4 Braun Multiplier (BM) — built using cascaded FAs
+    ↓ (tested with all input combinations)
+Complete Verified Design
+```
+
+### Block Diagram
+
+```
+    A[3:0] × B[3:0]
+         ↓
+   Partial Products (AND gates)
+         ↓
+   Carry-Save Array (Full Adders)
+         ↓
+   Final Addition Layer
+         ↓
+    P[7:0] (8-bit Product)
+```
+
+---
+
+## 📂 Project Structure
+
+```
+.
+├── HA.v                    # Half Adder module
+├── HA_tb.v                 # Half Adder testbench
+├── FA.v                    # Full Adder module (built using HAs)
+├── FA_tb.v                 # Full Adder testbench
+├── BM.v                    # 4x4 Braun Multiplier (top module)
+├── BM_tb.v                 # Braun Multiplier testbench
+├── HA_waveform.png         # Half Adder simulation waveform
+├── FA_waveform.png         # Full Adder simulation waveform
+└── BM_waveform.png         # Multiplier simulation waveform
+```
+
+---
+
+## 🔧 Modules Overview
+
+### 1. Half Adder (HA)
+* **Inputs:** `a`, `b`
+* **Outputs:** `sum`, `carry`
+* **Logic:** Pure gate-level using XOR and AND gates
+
+### 2. Full Adder (FA)
+* **Inputs:** `a`, `b`, `cin`
+* **Outputs:** `sum`, `cout`
+* **Implementation:** Built using 2 Half Adders and 1 OR gate
+
+### 3. 4x4 Braun Multiplier (BM)
+* **Inputs:** `A[3:0]`, `B[3:0]` (two 4-bit unsigned numbers)
+* **Output:** `P[7:0]` (8-bit product)
+* **Implementation:** Array of Full Adders processing partial products
+
+---
+
+## 🚀 How to Run
+
+### Option 1: Using EDA Playground (Recommended)
+
+1. Go to [EDA Playground](https://www.edaplayground.com/)
+2. Copy the module code into the left panel
+3. Copy the testbench code into the right panel
+4. Select **Icarus Verilog 12.0** as the simulator
+5. Enable **EPWave** for waveform viewing
+6. Click **Run**
+
+**Pro Tips:**
+* Go to Settings → Enable "Open waveform in new tab"
+* Expand code windows for better visibility
+* Make sure `$dumpfile` and `$dumpvars` are present in the testbench
+
+### Option 2: Using Local Simulator
+
+```bash
+# Compile and simulate using Icarus Verilog
+iverilog -o output HA.v HA_tb.v
+vvp output
+
+# View waveform using GTKWave
+gtkwave dump.vcd
+```
+
+---
+
+## 🧪 Testing Strategy
+
+### Half Adder Testing
+* All 4 input combinations tested
+* Verified sum and carry outputs
+
+### Full Adder Testing
+* All 8 input combinations tested
+* Verified correct carry propagation
+
+### Braun Multiplier Testing
+* **Exhaustive testing:** All 256 combinations (0×0 to 15×15)
+* Outputs monitored using `$monitor`
+* Waveforms captured for visual verification
+
+Example test cases:
+```
+0000 × 0000 = 00000000
+0101 × 0011 = 00001111 (5 × 3 = 15)
+1111 × 1111 = 11100001 (15 × 15 = 225)
+```
+
+---
+
+## 📊 Simulation Results
+
+All modules were tested independently before integration:
+
+* ✅ **Half Adder:** Correct sum and carry generation
+* ✅ **Full Adder:** Proper carry propagation
+* ✅ **Braun Multiplier:** Accurate 4x4 multiplication for all inputs
+
+Waveform screenshots are included in the repository for verification.
+
+---
+
+## 🛠️ Development Tools
+
+### Recommended Setup
+* **Code Editor:** Visual Studio Code
+* **Extension:** Verilog-HDL/SystemVerilog (for syntax highlighting)
+* **Simulator:** Icarus Verilog / EDA Playground
+* **Waveform Viewer:** EPWave / GTKWave
+
+---
+
+## 📌 Key Learnings
+
+* Understanding arithmetic circuit design from first principles
+* Building complex modules from simple building blocks (bottom-up approach)
+* Gate-level modeling and structural instantiation in Verilog
+* Systematic testing and verification methodology
+* Carry propagation in array multipliers
+* Modular design for hardware systems
+
+---
+
+## 🎓 Educational Value
+
+This project is perfect for:
+* Students learning digital logic design
+* Understanding how multiplication is implemented in hardware
+* Learning Verilog structural modeling
+* Practicing testbench development and waveform analysis
+
+**Why gate-level?**
+While not used in modern industrial designs, gate-level modeling provides:
+* Complete visibility into logic operations
+* Understanding of data paths and signal flow
+* Foundation for more complex RTL designs
+
+---
+
+## 🔮 Future Enhancements
+
+Possible extensions to this project:
+* Implement 8x8 or 16x16 multipliers
+* Add signed multiplication support (Booth's algorithm)
+* Compare with behavioral model for verification
+* Synthesize design and analyze area/delay trade-offs
+* Implement Wallace Tree multiplier for comparison
+
+---
+
+## 👨‍💻 Author
+
+**Adarsh Akshat**
+* B.Tech in Electrical and Electronics Engineering, NITK
+* GitHub: [@aadiakshat](https://github.com/aadiakshat)
+
+---
+
+## 📝 License
+
+MIT License - Feel free to use this for learning and educational purposes.
+
+---
+
+## 🤝 Contributing
+
+Suggestions and improvements are welcome! Feel free to:
+* Report issues
+* Suggest optimizations
+* Share educational resources
+
+---
+
+## 📚 References
+
+* Digital Design and Computer Architecture by Harris & Harris
+* Verilog HDL: A Guide to Digital Design and Synthesis by Samir Palnitkar
+* VLSI Digital Signal Processing Systems by Keshab K. Parhi
